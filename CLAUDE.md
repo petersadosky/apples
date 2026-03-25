@@ -9,8 +9,9 @@ The group votes on the best one. First to 3 points wins.
 - SwiftUI, targeting iOS 17+
 - Firebase Anonymous Auth (name entry, no account creation)
 - Cloud Firestore for real-time game sessions
+- Firebase Storage for generated image uploads
 - Lorem Picsum API for green card images
-- OpenAI Images API (DALL-E 3) for player-generated images
+- OpenAI Images API (gpt-image-1) for player-generated images
 
 ## Architecture Decisions
 - MVVM pattern with @Observable classes (iOS 17)
