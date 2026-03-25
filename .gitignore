@@ -1,0 +1,14 @@
+# API Keys
+apples/Services/APIKeys.swift
+
+# Xcode
+*.xcuserstate
+xcuserdata/
+DerivedData/
+*.xcworkspace/xcuserdata/
+
+# macOS
+.DS_Store
+
+# Firebase
+CloudFunctions/functions/node_modules/
