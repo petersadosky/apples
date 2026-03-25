@@ -1,6 +1,10 @@
 # API Keys
 apples/Services/APIKeys.swift
 
+# Firebase config (contains project IDs, API keys, sender IDs)
+apples/GoogleService-Info.plist
+CloudFunctions/.firebaserc
+
 # Xcode
 *.xcuserstate
 xcuserdata/

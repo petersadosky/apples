@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Sessions
+    match /sessions/{sessionId} {
+      // Any authenticated user can read sessions (for lobby browser)
+      allow read: if request.auth != null;
+
+      // Any authenticated user can create a session (they become host)
+      allow create: if request.auth != null
+                    && request.resource.data.hostId == request.auth.uid;
+
+      // Host can update any session field; other players can only update playerCount
+      allow update: if request.auth != null
+                    && (resource.data.hostId == request.auth.uid
+                        || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['playerCount']));
+      allow delete: if request.auth != null
+                    && resource.data.hostId == request.auth.uid;
+
+      // Players subcollection
+      match /players/{playerId} {
+        // Any authenticated user in the session can read players
+        allow read: if request.auth != null;
+
+        // A player can add themselves (playerId must match their auth uid)
+        allow create: if request.auth != null
+                      && playerId == request.auth.uid;
+
+        // A player can remove themselves, or the host can remove anyone
+        allow delete: if request.auth != null
+                      && (playerId == request.auth.uid
+                          || get(/databases/$(database)/documents/sessions/$(sessionId)).data.hostId == request.auth.uid);
+
+        // Only the host can update player docs (e.g. score)
+        allow update: if request.auth != null
+                      && get(/databases/$(database)/documents/sessions/$(sessionId)).data.hostId == request.auth.uid;
+      }
+
+      // Rounds subcollection
+      match /rounds/{roundId} {
+        // Any authenticated user can read rounds
+        allow read: if request.auth != null;
+
+        // Only the host can create rounds
+        allow create: if request.auth != null
+                      && get(/databases/$(database)/documents/sessions/$(sessionId)).data.hostId == request.auth.uid;
+
+        // Any authenticated user can update rounds (for submissions and votes)
+        allow update: if request.auth != null;
+      }
+    }
+  }
+}

@@ -1,8 +1,14 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    match /generated/{allPaths=**} {
-      allow read;
+    match /generated_images/{imageId} {
+      // Anyone can view game images
+      allow read: if true;
+
+      // Only authenticated users can upload images
+      allow write: if request.auth != null
+                   && request.resource.size < 10 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
     }
   }
 }
